@@ -21,3 +21,16 @@ exports.addMessage = functions.https.onRequest((req, res) => {
   
 });
 
+exports.roomPasswordCheck = functions.https.onRequest((req, res) => {
+  // Grab the text parameter.
+  const password = req.query.p;
+  const roomid = req.query.r;
+
+  admin.database().ref('/chatrooms').child(roomid).child('password')
+    .on("value", function(snapshot) { 
+      const actualPass = snapshot.val();
+      if (actualPass === password) res.status(200).end();
+      else res.status(403).end();
+     });
+  
+});
